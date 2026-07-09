@@ -6,9 +6,8 @@ services:
   - type: web
     name: athena-backend
     runtime: docker
-    dockerfilePath: ./Dockerfile
+    dockerfilePath: ./backend.Dockerfile
     dockerContext: .
-    dockerTarget: backend
     plan: free
     envVars:
       - key: DATABASE_URL
@@ -35,9 +34,8 @@ services:
   - type: web
     name: athena-frontend
     runtime: docker
-    dockerfilePath: ./Dockerfile
+    dockerfilePath: ./frontend.Dockerfile
     dockerContext: .
-    dockerTarget: frontend
     plan: free
     envVars:
       - key: BACKEND_URL
