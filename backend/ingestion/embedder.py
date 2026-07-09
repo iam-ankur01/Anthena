@@ -66,7 +66,7 @@ def embed_and_store(chunks: list[Document], document_id: str | None = None) -> i
     for i in range(0, len(chunks), batch_size):
         batch_chunks = chunks[i:i + batch_size]
         batch_ids = ids[i:i + batch_size]
-        
+
         retries = 3
         while retries > 0:
             try:
@@ -81,7 +81,7 @@ def embed_and_store(chunks: list[Document], document_id: str | None = None) -> i
                         raise e
                 else:
                     raise e
-        
+
         if i + batch_size < len(chunks):
             time.sleep(2)
 

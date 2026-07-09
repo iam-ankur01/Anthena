@@ -13,7 +13,6 @@ from sqlalchemy.orm import selectinload
 
 from backend.database.models import Conversation, Document, Message
 
-
 # ─── Conversations ────────────────────────────────────────────────
 
 

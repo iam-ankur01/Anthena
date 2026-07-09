@@ -4,17 +4,16 @@ All tests use mocked LLM calls so they run without an API key,
 and use SQLite in-memory for database isolation.
 """
 
+from unittest.mock import MagicMock, patch
+
 import pytest
 import pytest_asyncio
-from unittest.mock import AsyncMock, MagicMock, patch
-
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from backend.database.models import Base
 from backend.database.session import get_db
 from backend.main import app
-
 
 # ─── Test Database ─────────────────────────────────────────────────
 

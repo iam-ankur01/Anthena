@@ -1,13 +1,10 @@
 """Tests for the document ingestion pipeline."""
 
-import tempfile
-from pathlib import Path
-from unittest.mock import MagicMock, patch
+
+import pytest
 
 from backend.ingestion.chunker import chunk_documents
 from backend.ingestion.loader import load_document
-
-import pytest
 
 
 class TestDocumentLoader:

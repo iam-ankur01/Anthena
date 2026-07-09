@@ -3,8 +3,8 @@
 Provides CRUD operations for conversations and their messages.
 """
 
-from pydantic import BaseModel
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.database.crud import (

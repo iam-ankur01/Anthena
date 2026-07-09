@@ -1,9 +1,7 @@
 """Tests for FastAPI API endpoints."""
 
-import pytest
-from unittest.mock import patch, MagicMock
 
-from langchain_core.messages import AIMessage
+import pytest
 
 
 @pytest.mark.asyncio

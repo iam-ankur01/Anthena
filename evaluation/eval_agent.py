@@ -16,7 +16,7 @@ import json
 import sys
 from pathlib import Path
 
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import HumanMessage
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -58,7 +58,9 @@ def evaluate_single_case(test_case: dict) -> dict:
             "expected_tool": expected_tool,
             "actual_tools": actual_tools,
             "passed": passed,
-            "answer_preview": final_answer[:100] + "..." if len(final_answer) > 100 else final_answer,
+            "answer_preview": (
+                final_answer[:100] + "..." if len(final_answer) > 100 else final_answer
+            ),
         }
 
     except Exception as e:
@@ -79,7 +81,10 @@ def print_results(results: list[dict]) -> None:
     print("\n" + "=" * 100)
     print("ATHENA AGENT — ROUTING EVALUATION")
     print("=" * 100)
-    print(f"\n{'ID':>3} | {'Category':<10} | {'Expected':<18} | {'Actual':<25} | {'Pass':>4} | Question")
+    print(
+        f"\n{'ID':>3} | {'Category':<10} | {'Expected':<18} | "
+        f"{'Actual':<25} | {'Pass':>4} | Question"
+    )
     print("-" * 100)
 
     # Results

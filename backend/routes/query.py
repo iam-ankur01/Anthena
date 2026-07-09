@@ -5,9 +5,9 @@ invokes the LangGraph agent, stores the exchange in the database,
 and returns the agent's response with metadata.
 """
 
-from pydantic import BaseModel, Field
 from fastapi import APIRouter, Depends, HTTPException
 from langchain_core.messages import HumanMessage
+from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.agent.graph import compiled_graph
@@ -90,7 +90,7 @@ async def query_agent(
     # Extract the final answer and tools used
     final_message = result["messages"][-1]
     answer = final_message.content
-    
+
     # Handle langchain-google-genai returning content as a list of blocks
     if isinstance(answer, list):
         text_parts = []
