@@ -1,0 +1,62 @@
+[
+    {
+        "id": 1,
+        "question": "What are the main findings in my uploaded research paper?",
+        "expected_tool": "search_documents",
+        "category": "document"
+    },
+    {
+        "id": 2,
+        "question": "Summarize the key points from the PDF I uploaded about climate change.",
+        "expected_tool": "search_documents",
+        "category": "document"
+    },
+    {
+        "id": 3,
+        "question": "What does my document say about the methodology used in the study?",
+        "expected_tool": "search_documents",
+        "category": "document"
+    },
+    {
+        "id": 4,
+        "question": "According to my uploaded files, what were the experimental results?",
+        "expected_tool": "search_documents",
+        "category": "document"
+    },
+    {
+        "id": 5,
+        "question": "What is the current stock price of Apple?",
+        "expected_tool": "web_search",
+        "category": "web"
+    },
+    {
+        "id": 6,
+        "question": "What happened in the news today?",
+        "expected_tool": "web_search",
+        "category": "web"
+    },
+    {
+        "id": 7,
+        "question": "Who won the latest NBA championship?",
+        "expected_tool": "web_search",
+        "category": "web"
+    },
+    {
+        "id": 8,
+        "question": "Find me recent research papers on transformer architectures in NLP.",
+        "expected_tool": "arxiv_search",
+        "category": "arxiv"
+    },
+    {
+        "id": 9,
+        "question": "What are the latest papers on reinforcement learning from human feedback?",
+        "expected_tool": "arxiv_search",
+        "category": "arxiv"
+    },
+    {
+        "id": 10,
+        "question": "Search arXiv for papers about diffusion models for image generation.",
+        "expected_tool": "arxiv_search",
+        "category": "arxiv"
+    }
+]

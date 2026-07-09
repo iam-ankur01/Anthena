@@ -1,0 +1,53 @@
+# Render deployment configuration
+# Deploy via Render Dashboard or `render blueprint deploy`
+
+services:
+  # FastAPI Backend
+  - type: web
+    name: athena-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    dockerTarget: backend
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: athena-db
+          property: connectionURI
+        # Note: Render provides postgresql:// URLs; you may need to
+        # programmatically replace with postgresql+asyncpg://
+      - key: GEMINI_API_KEY
+        sync: false  # Set manually in Render dashboard
+      - key: CHROMA_PERSIST_DIR
+        value: /app/data/chroma
+      - key: LLM_MODEL
+        value: gemini-2.5-flash
+      - key: EMBEDDING_MODEL
+        value: gemini-embedding-2
+    disk:
+      name: chroma-data
+      mountPath: /app/data/chroma
+      sizeGB: 1
+    healthCheckPath: /health
+
+  # Streamlit Frontend
+  - type: web
+    name: athena-frontend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    dockerTarget: frontend
+    plan: free
+    envVars:
+      - key: BACKEND_URL
+        fromService:
+          type: web
+          name: athena-backend
+          envVarKey: RENDER_EXTERNAL_URL
+
+databases:
+  - name: athena-db
+    plan: free
+    databaseName: athena_db
+    user: athena
