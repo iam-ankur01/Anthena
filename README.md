@@ -1,168 +1,50 @@
-# 🏛️ Athena — Intelligent Research Assistant
+# 🏛️ Athena — Intelligent Agentic RAG System
 
-frontend - https://athena-frontend-tx5x.onrender.com
+Athena is a production-grade, full-stack Artificial Intelligence application that allows users to upload documents (PDF, TXT, MD) and chat with an AI that can intelligently search those documents, search the web, and search academic papers to provide accurate answers.
 
-An agentic RAG system that intelligently routes your questions to the right tool — searching your uploaded documents, the web, or academic papers — powered by LangGraph for transparent, debuggable reasoning.
+## 🚀 Tech Stack
 
-![Python](https://img.shields.io/badge/Python-3.11-blue)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-green)
-![LangGraph](https://img.shields.io/badge/LangGraph-0.2+-purple)
-![License](https://img.shields.io/badge/License-MIT-yellow)
+**Frontend:**
+*   **[Streamlit](https://streamlit.io/):** A Python-based framework for rapidly building data and AI user interfaces.
 
----
+**Backend:**
+*   **[FastAPI](https://fastapi.tiangolo.com/):** A lightning-fast, modern Python web framework for building APIs.
+*   **[Google Gemini 2.5](https://ai.google.dev/):** The core Large Language Model (LLM) powering the intelligence.
 
-## ✨ What It Does
-
-Ask Athena a question, and it automatically decides the best way to answer:
-
-| Question Type | Tool Used | Example |
-|---|---|---|
-| 📄 About your documents | **Document Search** (RAG) | *"What does my paper say about the methodology?"* |
-| 🌐 Current events | **Web Search** (DuckDuckGo) | *"What happened in tech news today?"* |
-| 📚 Research papers | **arXiv Search** | *"Find papers on transformer architectures"* |
-
-No manual tool selection — the LLM reads the tool docstrings and makes the routing decision itself.
-
----
+**Databases:**
+*   **[PostgreSQL](https://www.postgresql.org/):** Stores relational data like user conversations and message history.
+*   **[ChromaDB](https://www.trychroma.com/):** A Vector Database that stores mathematical representations (embeddings) of uploaded documents for semantic search.
 
 ## 🏗️ Architecture
 
-```
-User → Streamlit UI → FastAPI → LangGraph Agent → [Tool Selection]
-                                       │
-                         ┌──────────────┼──────────────┐
-                         ▼              ▼              ▼
-                   Document Tool   Web Search     arXiv Search
-                   (ChromaDB)      (DuckDuckGo)   (arXiv API)
-                         │
-                    PostgreSQL
-                  (conversations,
-                   documents)
-```
+1.  **User uploads a document** via the Streamlit frontend.
+2.  The FastAPI backend receives the file, splits it into smaller "chunks", converts those chunks into vectors (embeddings), and stores them in ChromaDB.
+3.  **User asks a question** in the chat.
+4.  The backend uses an **Agentic System** (LangChain/LangGraph) to decide which tool to use.
+5.  If the question is about the uploaded document, the Agent queries ChromaDB, retrieves the relevant chunks, and generates a response.
+6.  The response is sent back to the frontend and displayed to the user.
 
-**Key technology choices:**
-- **LangGraph over AgentExecutor** — explicit, debuggable state machine instead of a black-box chain-of-thought loop. Each node fires visibly, making it easy to trace why the agent chose a particular tool.
-- **ChromaDB over Pinecone** — runs locally with zero external dependencies, persists to disk. No API keys or cloud accounts needed for the vector store.
-- **DuckDuckGo over SerpAPI** — free, no API key required. Good enough for demonstrating web search routing.
-- **Mocked LLM in tests** — all tests run without an OpenAI API key. CI never makes real LLM calls.
-
----
-
-## 🚀 Quick Start
+## 💻 Local Development
 
 ### Prerequisites
-- Docker and Docker Compose
-- An OpenAI API key
+*   Python 3.11+
+*   PostgreSQL running locally (or via Docker)
 
-### Run with Docker Compose
+### Setup
+1.  Clone the repository.
+2.  Install dependencies: `pip install -r requirements.txt`
+3.  Copy `.env.example` to `.env` and fill in your `GEMINI_API_KEY` and `DATABASE_URL`.
+4.  Run the backend: `uvicorn backend.main:app --reload`
+5.  Run the frontend (in a separate terminal): `streamlit run frontend/app.py`
 
-```bash
-# Clone the repo
-git clone https://github.com/yourusername/athena.git
-cd athena
+## ☁️ Deployment (Render)
 
-# Set up environment variables
-cp .env.example .env
-# Edit .env and add your OPENAI_API_KEY
+This project is configured to deploy seamlessly to [Render.com](https://render.com/) using the `render.yaml` Blueprint.
 
-# Start everything
-docker-compose up --build
-
-# Backend: http://localhost:8000
-# Frontend: http://localhost:8501
-# API docs: http://localhost:8000/docs
-```
-
-### Run Locally (development)
-
-```bash
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Set up environment
-cp .env.example .env
-# Edit .env with your API key and database URL
-
-# Start the backend
-uvicorn backend.main:app --reload --port 8000
-
-# In a separate terminal, start the frontend
-streamlit run frontend/app.py
-```
-
----
-
-## 🧪 Testing
-
-```bash
-# Run all tests (no API key needed — uses mocked LLM)
-pytest tests/ -v
-
-# Run with coverage
-pytest tests/ -v --cov=backend --cov-report=term-missing
-
-# Run the routing evaluation (needs API key)
-python -m evaluation.eval_agent
-```
-
----
-
-## 📁 Project Structure
-
-```
-athena/
-├── backend/
-│   ├── agent/          # LangGraph agent + tools
-│   ├── database/       # SQLAlchemy models + CRUD
-│   ├── ingestion/      # Document loading + chunking + embedding
-│   ├── routes/         # FastAPI endpoints
-│   ├── config.py       # Centralized configuration
-│   └── main.py         # App entry point
-├── frontend/
-│   └── app.py          # Streamlit chat interface
-├── evaluation/
-│   ├── test_cases.json # 10 curated routing test cases
-│   └── eval_agent.py   # Routing accuracy evaluator
-├── tests/              # pytest test suite
-├── docker-compose.yml
-├── Dockerfile
-└── .github/workflows/  # CI/CD
-```
-
----
-
-## 📊 API Endpoints
-
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/query` | Ask a question — routes to the right tool |
-| `POST` | `/upload` | Upload a document for RAG |
-| `GET` | `/conversations` | List all conversations |
-| `GET` | `/conversations/{id}/messages` | Get conversation messages |
-| `DELETE` | `/conversations/{id}` | Delete a conversation |
-| `GET` | `/documents` | List uploaded documents |
-| `GET` | `/health` | Health check |
-
----
-
-## 🛠️ Design Decisions
-
-1. **LangGraph over AgentExecutor** — Explicit state machine with visible routing decisions. When debugging "why did the agent use web search instead of documents?", I can trace through individual nodes instead of reading chain-of-thought logs.
-
-2. **ChromaDB over Pinecone** — Zero external dependencies for the vector store. Persists to disk, works offline, and the entire stack runs in Docker Compose without any cloud accounts.
-
-3. **Mocked LLM in tests** — Tests never make real API calls. The mocked LLM returns deterministic responses, so CI runs are fast, free, and reproducible.
-
-4. **Tool docstrings drive routing** — Instead of writing explicit routing rules, the LLM reads each tool's docstring (which says when to use it and when not to) and makes the routing decision itself. This is how production agent systems work.
-
-5. **Async everywhere** — FastAPI with async SQLAlchemy. No blocking I/O in the request path. The database session lifecycle is managed by a FastAPI dependency with automatic commit/rollback.
-
----
-
-## 📄 License
-
-MIT
+1. Connect your GitHub repository to Render.
+2. Go to **Blueprints** and sync `render.yaml`.
+3. Render will automatically provision:
+    *   A managed PostgreSQL database (`athena-db`)
+    *   A backend web service (`athena-backend`)
+    *   A frontend web service (`athena-frontend`)
+4. Add your `GEMINI_API_KEY` to the `athena-backend` environment variables in the Render dashboard.
