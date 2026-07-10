@@ -108,7 +108,7 @@ def api_call(method: str, endpoint: str, **kwargs) -> dict | list | None:
         response.raise_for_status()
         return response.json()
     except requests.exceptions.ConnectionError:
-        st.error("⚠️ Cannot connect to the backend. Is it running on http://localhost:8000?")
+        st.error(f"⚠️ Cannot connect to the backend. Is it running on {BACKEND_URL}?")
         return None
     except requests.exceptions.HTTPError as e:
         st.error(f"⚠️ API error: {e.response.text}")
