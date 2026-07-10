@@ -1,5 +1,6 @@
 """Application configuration loaded from environment variables."""
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -16,6 +17,13 @@ class Settings(BaseSettings):
 
     # --- Database ---
     database_url: str = "postgresql+asyncpg://athena:athena_secret@localhost:5432/athena_db"
+
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def replace_postgres_scheme(cls, v: str) -> str:
+        if isinstance(v, str) and v.startswith("postgresql://"):
+            return v.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return v
 
     # --- ChromaDB ---
     chroma_persist_dir: str = "./data/chroma"
