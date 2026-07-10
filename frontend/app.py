@@ -13,7 +13,9 @@ import streamlit as st
 
 # ─── Configuration ─────────────────────────────────────────────────
 
-BACKEND_URL = "http://localhost:8000"
+import os
+
+BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:8000")
 
 # ─── Page Config ───────────────────────────────────────────────────
 
